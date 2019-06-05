@@ -1,0 +1,8 @@
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\bin\Debug\sds011_viewer.exe
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\bin\Debug\sds011_viewer.pdb
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\obj\Debug\sds011_viewer.csprojResolveAssemblyReference.cache
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\obj\Debug\sds011_viewer.exe
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\obj\Debug\sds011_viewer.pdb
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\obj\Debug\sds011_viewer.MainForm.resources
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\obj\Debug\sds011_viewer.csproj.GenerateResource.Cache
+C:\Users\daniel.schuele\Desktop\gitRepos\00_github\SDS011\gui\sds011_viewer\sds011_viewer\bin\Debug\sds011_viewer.exe.config
