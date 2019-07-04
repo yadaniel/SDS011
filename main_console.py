@@ -2,7 +2,7 @@
 #!/cygdrive/c/Python27/python
 # -*- coding: utf-8 -*-
 
-import sys, serial, struct, time, atexit, argparse
+import sys, serial, struct, time, atexit, datetime, argparse
 
 # platform dependent code
 def beep(*args,**kwargs):
@@ -16,12 +16,19 @@ if platform.system().lower() in ["windows"]:
 parser = argparse.ArgumentParser(description="SDS011 PM2.5 PM10 measurement")
 parser.add_argument("com", help="com port (e.g. COM1 on windows, /dev/ttyUSB0 on raspberry)")
 parser.add_argument("--cont", action="store_true", help="cont. mode")
+parser.add_argument("--log", action="store_true", help="log on")
 args = parser.parse_args()
+
+log = None
+if args.log:
+    log = file("pm25pm10.log", "a")
+    log.write("---\n")
 
 try:
     ser = serial.Serial(port = args.com, baudrate = 9600, timeout = 0.25)
     ser.flushInput()
     atexit.register(lambda: [sys.stdout.write("COM closing"), ser.close()])
+    atexit.register(lambda: [log.flush(), log.close()] if log else [])
 except Exception as exp:
     print(exp)
     sys.exit()
@@ -77,6 +84,11 @@ def process_beep(pm25, pm10):
     elif pm25*10 >= 20 or pm10*10 >= 50:
         for _ in range(3):
             beep(2500, 100)
+    return pm25, pm10
+
+def process_log(pm25, pm10):
+    if log:
+        log.write("%s: pm25=%.2f, pm10=%.2f\n" % (datetime.datetime.now(), pm25, pm10))
     return pm25, pm10
 
 pm25_max, pm10_max = 0, 0
@@ -141,6 +153,7 @@ if args.cont:
             # process_frame(pm25, pm10)
             process_frame_stars(pm25, pm10)
             process_beep(pm25, pm10)
+            process_log(pm25, pm10)
         time.sleep(1)
 else:
     while True:
@@ -152,6 +165,7 @@ else:
             # process_frame(pm25, pm10)
             process_frame_stars(pm25, pm10)
             process_beep(pm25, pm10)
+            process_log(pm25, pm10)
         sensor_sleep()
         time.sleep(20)
 
