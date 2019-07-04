@@ -1,16 +1,20 @@
+#!/usr/bin/env python
 #!/cygdrive/c/Python27/python
 # -*- coding: utf-8 -*-
 
 import sys, serial, struct, time, atexit, argparse
 
 # platform dependent code
+def beep(*args,**kwargs):
+    print("!!!beep!!")
+
 import platform
 print platform.system()
 if platform.system().lower() in ["windows"]:
     from winsound import Beep as beep
 
 parser = argparse.ArgumentParser(description="SDS011 PM2.5 PM10 measurement")
-parser.add_argument("com", help="com port")
+parser.add_argument("com", help="com port (e.g. COM1 on windows, /dev/ttyUSB0 on raspberry)")
 parser.add_argument("--cont", action="store_true", help="cont. mode")
 args = parser.parse_args()
 
@@ -67,10 +71,10 @@ def process_frame(pm25, pm10):
     return pm25, pm10
 
 def process_beep(pm25, pm10):
-    if pm25*10 >= 30 or pm10*10 >= 40:
+    if pm25*10 >= 30 or pm10*10 >= 60:
         for _ in range(3):
             beep(2500, 500)
-    elif pm25*10 >= 20 or pm10*10 >= 30:
+    elif pm25*10 >= 20 or pm10*10 >= 50:
         for _ in range(3):
             beep(2500, 100)
     return pm25, pm10
