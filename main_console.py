@@ -9,7 +9,7 @@ def beep(*args,**kwargs):
     print("!!!beep!!")
 
 import platform
-print platform.system()
+print("SDS011 (pm20pm10.log) started on", platform.system())
 if platform.system().lower() in ["windows"]:
     from winsound import Beep as beep
 
@@ -17,12 +17,14 @@ parser = argparse.ArgumentParser(description="SDS011 PM2.5 PM10 measurement")
 parser.add_argument("com", help="com port (e.g. COM1 on windows, /dev/ttyUSB0 on raspberry)")
 parser.add_argument("--cont", action="store_true", help="cont. mode")
 parser.add_argument("--log", action="store_true", help="log on")
+parser.add_argument("--quiet", action="store_true", help="quiet")
 args = parser.parse_args()
 
 log = None
 if args.log:
-    log = file("pm25pm10.log", "a")
+    log = file("/home/pi/pm25pm10.log", "a")
     log.write("---\n")
+    log.flush()
 
 try:
     ser = serial.Serial(port = args.com, baudrate = 9600, timeout = 0.25)
@@ -78,6 +80,8 @@ def process_frame(pm25, pm10):
     return pm25, pm10
 
 def process_beep(pm25, pm10):
+    if args.quiet:
+        return pm25, pm10
     if pm25*10 >= 30 or pm10*10 >= 60:
         for _ in range(3):
             beep(2500, 500)
@@ -89,6 +93,7 @@ def process_beep(pm25, pm10):
 def process_log(pm25, pm10):
     if log:
         log.write("%s: pm25=%.2f, pm10=%.2f\n" % (datetime.datetime.now(), pm25, pm10))
+        log.flush()
     return pm25, pm10
 
 pm25_max, pm10_max = 0, 0
@@ -105,8 +110,9 @@ def process_frame_stars(pm25, pm10):
     lst[pm25_max+9] = ']'
     lst[linewidth-pm10_max-11] = '['
     line = "".join(lst)
-    print(line)
-    sys.stdout.flush()
+    if not args.quiet:
+        print(line)
+        sys.stdout.flush()
     return pm25/10, pm10/10
 
 def sensor_read():
